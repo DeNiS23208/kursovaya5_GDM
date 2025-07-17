@@ -1,0 +1,13 @@
+[flake8]
+exclude =
+    venv/,
+    migrations/,
+    __pycache__,
+    .pytest_cache/,
+    .env,
+    .coverage,
+    manage.py,
+    config/wsgi.py,
+    config/asgi.py,
+    config/celery.py
+max-line-length = 160
