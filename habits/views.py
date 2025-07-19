@@ -1,5 +1,6 @@
 from rest_framework import viewsets, permissions
 from .models import Habit
+from .permission import IsOwner
 from .serializers import HabitSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -7,7 +8,7 @@ from rest_framework.response import Response
 
 class HabitViewSet(viewsets.ModelViewSet):
     serializer_class = HabitSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     def get_queryset(self):
         if self.action == "list":

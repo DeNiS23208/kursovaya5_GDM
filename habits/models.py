@@ -48,5 +48,9 @@ class Habit(models.Model):
         if self.periodicity > 7:
             raise ValidationError("Периодичность не может превышать 7 дней.")
 
-    def str(self):
+    def __str__(self):
         return f"{self.action} — {self.user.email}"
+
+    class Meta:
+        verbose_name = "Привычка"
+        verbose_name_plural = "Привычки"
