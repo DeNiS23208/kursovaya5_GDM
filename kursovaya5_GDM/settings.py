@@ -115,3 +115,4 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": 60.0,
     },
 }
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
