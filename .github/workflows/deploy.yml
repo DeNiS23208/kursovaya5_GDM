@@ -26,6 +26,8 @@ jobs:
     - name: Run tests
       run: |
         python manage.py test
+      env:
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
     - name: Deploy to remote server
       uses: appleboy/ssh-action@v0.1.6
