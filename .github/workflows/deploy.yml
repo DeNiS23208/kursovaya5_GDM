@@ -9,37 +9,6 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
-    env:
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      DEBUG: 'True'
-      ALLOWED_HOSTS: 127.0.0.1,localhost
-      DATABASE_NAME: postgres
-      DATABASE_USER: postgres
-      DATABASE_PASSWORD: postgres
-      DATABASE_HOST: localhost
-      DATABASE_PORT: 5432
-      CELERY_BROKER_URL: redis://localhost:6379/0
-
-    services:
-      postgres:
-        image: postgres:15
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_DB: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-      redis:
-        image: redis:7
-        ports:
-          - 6379:6379
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -55,11 +24,20 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run tests
+      env:
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        DEBUG: ${{ secrets.DEBUG }}
+        ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+        DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+        DATABASE_USER: ${{ secrets.DATABASE_USER }}
+        DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+        DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+        DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+        CELERY_BROKER_URL: ${{ secrets.CELERY_BROKER_URL }}
       run: |
         python manage.py test
 
     - name: Deploy to remote server
-      if: success()
       uses: appleboy/ssh-action@v0.1.6
       with:
         host: ${{ secrets.SSH_HOST }}
@@ -68,6 +46,6 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script: |
           cd /home/denis/kursovaya5_GDM
-          git pull
-          docker compose down
-          docker compose up --build -d
+          git pull origin feature/kursovaya5
+          docker-compose down
+          docker-compose up --build -d
